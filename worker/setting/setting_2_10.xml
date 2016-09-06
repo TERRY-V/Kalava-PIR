@@ -1,0 +1,53 @@
+<Setting>
+    <TrainDir>./train/</TrainDir>
+    <MaskDir>./mask/</MaskDir>
+    <QueryDir>./query/</QueryDir>
+    <ResultDir>./result/</ResultDir>
+    <FeatureDir>./data/</FeatureDir>
+    <WordDir>./data/</WordDir>
+    <IndexDir>./data/</IndexDir>
+    <InformationLogName>log.txt</InformationLogName>
+    <ImageInfoName>imageInfo.dat</ImageInfoName>
+    <FeatureInfoName>featureInfo.dat</FeatureInfoName>
+    <FeatureDataName>featureData.h5</FeatureDataName>
+    <WordInfoName>wordInfo.dat</WordInfoName>
+    <WordDataName>featureData.h5</WordDataName>
+    <FlannIndexName>flannIndex.dat</FlannIndexName>
+    <KnnBuild>3</KnnBuild>
+    <KnnSearch>3</KnnSearch>
+    <TopImageNum>50</TopImageNum>
+    <OutImageNum>5</OutImageNum>
+    <MaxImageNum>10000000</MaxImageNum>
+    <FeatureLen>128</FeatureLen>
+    <Sigma>1</Sigma>
+    <HammingThreshold>128</HammingThreshold>
+    <ScaleRange>1</ScaleRange>
+    <SizePieceNum>1</SizePieceNum>
+    <AnglePieceNum>8</AnglePieceNum>
+    <FeatureMatchNum>3</FeatureMatchNum>
+    <MaxThreadNum>64</MaxThreadNum>
+    <TrainUseMask>1</TrainUseMask>
+    <QueryUseMask>1</QueryUseMask>
+    <MaskLineLenRate>0.4</MaskLineLenRate>
+    <MaskLineGroupDist>1</MaskLineGroupDist>
+    <TrainImageWidth>280</TrainImageWidth>
+    <TrainImageHeight>320</TrainImageHeight>
+    <QueryImageWidth>280</QueryImageWidth>
+    <QueryImageHeight>320</QueryImageHeight>
+    <FeatureTypeValue>2
+        <!--FAST: 0, SURF: 1, SIFT: 2-->
+    </FeatureTypeValue>
+    <DescriptorTypeValue>2
+        <!--BRIF: 0, SURF: 1, SIFT: 2-->
+    </DescriptorTypeValue>
+    <DrawMatching>0</DrawMatching>
+    <RANSAC>0</RANSAC>
+    <QueryProcessType>1</QueryProcessType>
+    <ImagePreProcessType>1</ImagePreProcessType>
+    <TrainImagesStartPos>0.1</TrainImagesStartPos>
+    <TrainImagesEndPos>0.2</TrainImagesEndPos>
+    <DetectMSER>0</DetectMSER>
+    <RemoveLine>1</RemoveLine>
+    <DetectQuad>0</DetectQuad>
+	<UsingVisualWord>0</UsingVisualWord>
+</Setting>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="textDetect"
+ targetNamespace="http://localhost:8888/textDetect.wsdl"
+ xmlns:tns="http://localhost:8888/textDetect.wsdl"
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:ns="urn:Imsearch"
+ xmlns:ns2="urn:textDetect"
+ xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/"
+ xmlns:HTTP="http://schemas.xmlsoap.org/wsdl/http/"
+ xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/"
+ xmlns:DIME="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/"
+ xmlns:WSDL="http://schemas.xmlsoap.org/wsdl/"
+ xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+<types>
+
+ <schema targetNamespace="urn:Imsearch"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:ns="urn:Imsearch"
+  xmlns:ns2="urn:textDetect"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="urn:textDetect"/>
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <complexType name="pc"><!-- ns__pc -->
+
+   <sequence>
+     <element name="pc" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__pc::pc -->
+     <element name="score" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ns__pc::score -->
+   </sequence>
+  </complexType>
+ </schema>
+
+ <schema targetNamespace="urn:textDetect"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:ns="urn:Imsearch"
+  xmlns:ns2="urn:textDetect"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="urn:Imsearch"/>
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <complexType name="box"><!-- box -->
+
+   <sequence>
+     <element name="x" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- box::x -->
+     <element name="width" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- box::width -->
+     <element name="y" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- box::y -->
+     <element name="height" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- box::height -->
+     <element name="words" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/><!-- box::words -->
+   </sequence>
+  </complexType>
+  <complexType name="result"><!-- result -->
+
+   <sequence>
+     <element name="state" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- result::state -->
+     <element name="boxes" type="ns2:box" minOccurs="0" maxOccurs="unbounded"/><!-- result::boxes -->
+     <element name="image" type="xsd:base64Binary" minOccurs="1" maxOccurs="1" nillable="true"/><!-- result::image -->
+   </sequence>
+  </complexType>
+  <!-- operation request element -->
+  <element name="setParams">
+   <complexType>
+    <sequence>
+     <element name="input" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ns2__setParams::input -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="setParamsResponse">
+   <complexType>
+    <sequence>
+     <element name="output" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns2__setParams::output -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="textDetect">
+   <complexType>
+    <sequence>
+     <element name="input" type="xsd:base64Binary" minOccurs="1" maxOccurs="1" nillable="true"/><!-- ns2__textDetect::input -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="textDetectResponse">
+   <complexType>
+    <sequence>
+     <element name="output" type="ns2:result" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns2__textDetect::output -->
+    </sequence>
+   </complexType>
+  </element>
+ </schema>
+
+</types>
+
+<message name="setParamsRequest">
+ <part name="Body" element="ns2:setParams"/><!-- ns2__setParams::ns2__setParams -->
+</message>
+
+<message name="setParamsResponse">
+ <part name="Body" element="ns2:setParamsResponse"/>
+</message>
+
+<message name="textDetectRequest">
+ <part name="Body" element="ns2:textDetect"/><!-- ns2__textDetect::ns2__textDetect -->
+</message>
+
+<message name="textDetectResponse">
+ <part name="Body" element="ns2:textDetectResponse"/>
+</message>
+
+<portType name="textDetectPortType">
+ <operation name="setParams">
+  <documentation>Service definition of function ns2__setParams</documentation>
+  <input message="tns:setParamsRequest"/>
+  <output message="tns:setParamsResponse"/>
+ </operation>
+ <operation name="textDetect">
+  <documentation>Service definition of function ns2__textDetect</documentation>
+  <input message="tns:textDetectRequest"/>
+  <output message="tns:textDetectResponse"/>
+ </operation>
+</portType>
+
+<binding name="textDetect" type="tns:textDetectPortType">
+ <SOAP:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+ <operation name="setParams">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="textDetect">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+</binding>
+
+<service name="textDetect">
+ <documentation>gSOAP 2.8.17r generated service definition</documentation>
+ <port name="textDetect" binding="tns:textDetect">
+  <SOAP:address location="http://localhost:8888/textDetect.cgi"/>
+ </port> <port name="textDetect" binding="tns:textDetect">
+  <SOAP:address location="http://localhost:8888"/>
+ </port>
+</service>
+
+</definitions>

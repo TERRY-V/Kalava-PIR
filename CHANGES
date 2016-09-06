@@ -1,0 +1,97 @@
+Kalava 1.0 changes notes
+========================
+
+------------------------------------------------------------------------------
+Upgrade urgency levels:
+
+LOW:      No need to upgrade unless there are new features you want to use.
+MODERATE: Program an upgrade of the server, but it's not urgent.
+HIGH:     There is a critical bug that may affect a subset of users. Upgrade!
+CRITICAL: There is a critical bug affecting MOST USERS. Upgrade ASAP.
+--------------------------------------------------------------------------------
+
+--[ Kalava 1.0.0 Beta 3 ] Relese date: 06 July 2015
+
+Upgrade urgency: HIGH.
+
+>> General changes
+
+>> Sentinel changes
+
+* [FIX] Workspace permission bug solved.
+
+>> Master changes
+
+* [FIX] Trigger bug in serverMain function fixed.
+* [FIX] Logging function optimized for reducing io elapsed time.
+* [NEW] Query num limit added for optimizing the query operation.
+
+>> Worker changes
+
+* [FIX] Logging switching function optimized in recovery mode.
+
+--[ Kalava 1.0.0 Beta 2 ] Relese date: 01 June 2015
+
+Upgrade urgency: HIGH.
+
+>> General changes
+
+* [NEW] Configuration file for master and worker
+* [NEW] English ocr text detecting service
+* [NEW] Ascii art logo increased
+
+>> Sentinel changes
+
+* No changes to Sentinel.
+
+>> Master changes
+
+* [FIX] The meaning of tag parameter in ns__searchResponse was changed, -1 means
+        the server is not ready for image search.
+* [FIX] The permission of created recognizing directory modified.
+* [FIX] Search function logging optimized.
+* [FIX] Search mutex scope bug solved.
+
+* [NEW] Add configuration file for master service(master.conf).
+* [NEW] English ocr text detecting service is combined into the Kalava service.
+* [NEW] Master service failover machanisms.
+
+>> Worker changes
+
+* [NEW] Added configuration file for worker service(worker.conf).
+* [NEW] Worker service failover mechannism.
+
+--[ Kalava 1.0.0 Beta 1 ] Relese date: 22 May 2015
+
+Upgrade urgency: HIGH.
+
+>> General changes
+
+* [FIX] Relevance sort optimized.
+
+* [NEW] Faster image search.
+* [NEW] Thread timeout was checked.
+* [NEW] Image search consumed time.
+
+>> Sentinel changes
+
+* [NEW] Sentinel configuration file was added, allowing configuring sentinel port.
+
+>> Master changes
+
+* [FIX] Use stable quick sort to replace old bubble sort algorithm.
+
+* [NEW] Master watchdog periodically collect worker status for improving retrieval
+        efficiency.
+* [NEW] Thread-level monitoring mechanism was added for checking timeout threads.
+* [NEW] Memory and disk usage information on overall system statistics was gathered
+	in getServerInfo routine.
+* [NEW] Consumed-time was returned after image search operation.
+
+>> Worker changes
+
+* [NEW] Thread-level monitoring mechanism was added for checking timeout threads.
+* [NEW] Memory and disk usage information on overall system statistics was gathered
+	in getServerInfo routine.
+* [NEW] Consumed-time was returned after image search operation.
+

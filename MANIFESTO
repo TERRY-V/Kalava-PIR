@@ -1,0 +1,27 @@
+[Note: this is Kalava's manifesto, for general information about
+	installing and running the service read the README file instead.]
+
+Kalava Manifesto
+================
+
+1 - Memory storage is #1. Memory is fast, and allows our service to have very
+    predictable performance.
+
+2 - Fundamental data structures for a fundamental API. Avoid intermediate layers
+    in API, so that the complexity is obvious and more complex operations can 
+    be performed as the sum of the basic operations.
+
+3 - Code is like a poem; it's not just something we write to reach some practical 
+    result but an art of work.
+
+4 - We're against complexity. We believe designing systems is a fight against
+    complexity. We'll accept to fight the complexity when it's worthwhile but
+    we'll try hard to recognize when a small feature is not worth 1000s of lines
+    of code. Most of the time the best way to fight complexity is by not
+    creating it at all.
+
+5 - We optimize for joy. We believe writing code is a lot of hard work, and the
+    only way it can be worth is by enjoying it. When there is no longer joy in
+    writing code, the best thing to do is stop. To prevent this, we'll avoid
+    taking paths that will make the service less of a joy to develop.
+

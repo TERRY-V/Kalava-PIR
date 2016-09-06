@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <schema targetNamespace="urn:serlaunch"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:ns="urn:serlaunch"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <!-- operation request element -->
+  <element name="launch">
+   <complexType>
+    <sequence>
+     <element name="workspace" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__launch::workspace -->
+     <element name="tpldir" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__launch::tpldir -->
+     <element name="ip" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__launch::ip -->
+     <element name="port" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__launch::port -->
+     <element name="version" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__launch::version -->
+     <element name="recgdir" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__launch::recgdir -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="launchResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__launch::tag -->
+    </sequence>
+   </complexType>
+  </element>
+ </schema>
+

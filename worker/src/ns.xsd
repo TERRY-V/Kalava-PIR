@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <schema targetNamespace="urn:Imsearch"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:ns="urn:Imsearch"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <complexType name="pc"><!-- ns__pc -->
+
+   <sequence>
+     <element name="pc" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__pc::pc -->
+     <element name="score" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ns__pc::score -->
+   </sequence>
+  </complexType>
+  <!-- operation request element -->
+  <element name="serviceInit">
+   <complexType>
+    <sequence>
+     <element name="workspace" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__serviceInit::workspace -->
+     <element name="tpldir" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__serviceInit::tpldir -->
+     <element name="recgmethod" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__serviceInit::recgmethod -->
+     <element name="option" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__serviceInit::option -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="serviceInitResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__serviceInit::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="train">
+   <complexType>
+    <sequence>
+     <element name="autostart" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ns__train::autostart -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="trainResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__train::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="trainAdd">
+   <complexType>
+    <sequence>
+     <element name="imgPath" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__trainAdd::imgPath -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="trainAddResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__trainAdd::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="trainDelete">
+   <complexType>
+    <sequence>
+     <element name="imgPath" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__trainDelete::imgPath -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="trainDeleteResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__trainDelete::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="serviceStart">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="serviceStartResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__serviceStart::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="imSearch">
+   <complexType>
+    <sequence>
+     <element name="imgPath" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__imSearch::imgPath -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="searchResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ns__searchResponse::tag -->
+     <element name="match" type="ns:pc" minOccurs="0" maxOccurs="unbounded"/><!-- ns__searchResponse::match -->
+     <element name="ocr" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__searchResponse::ocr -->
+     <element name="consumedTime" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ns__searchResponse::consumedTime -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="serviceStop">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="serviceStopResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__serviceStop::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="serviceRestart">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="serviceRestartResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__serviceRestart::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="state">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="stateResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__state::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="progressPCT">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="progressPCTResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:float" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__progressPCT::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="clear">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="clearResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__clear::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="pid">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="pidResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__pid::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="quit">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="quitResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__quit::tag -->
+    </sequence>
+   </complexType>
+  </element>
+ </schema>
+

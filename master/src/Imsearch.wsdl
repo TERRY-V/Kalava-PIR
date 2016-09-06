@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="Imsearch"
+ targetNamespace="http://localhost:8888/Imsearch.wsdl"
+ xmlns:tns="http://localhost:8888/Imsearch.wsdl"
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:ns="urn:Imsearch"
+ xmlns:ns2="urn:textDetect"
+ xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/"
+ xmlns:HTTP="http://schemas.xmlsoap.org/wsdl/http/"
+ xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/"
+ xmlns:DIME="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/"
+ xmlns:WSDL="http://schemas.xmlsoap.org/wsdl/"
+ xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+<types>
+
+ <schema targetNamespace="urn:Imsearch"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:ns="urn:Imsearch"
+  xmlns:ns2="urn:textDetect"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="urn:textDetect"/>
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <complexType name="pc"><!-- ns__pc -->
+
+   <sequence>
+     <element name="pc" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__pc::pc -->
+     <element name="score" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ns__pc::score -->
+   </sequence>
+  </complexType>
+  <complexType name="box"><!-- box -->
+
+   <sequence>
+     <element name="x" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- box::x -->
+     <element name="width" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- box::width -->
+     <element name="y" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- box::y -->
+     <element name="height" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- box::height -->
+     <element name="words" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/><!-- box::words -->
+   </sequence>
+  </complexType>
+  <complexType name="result"><!-- result -->
+
+   <sequence>
+     <element name="state" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- result::state -->
+     <element name="boxes" type="ns:box" minOccurs="0" maxOccurs="unbounded"/><!-- result::boxes -->
+     <element name="image" type="xsd:base64Binary" minOccurs="1" maxOccurs="1" nillable="true"/><!-- result::image -->
+   </sequence>
+  </complexType>
+  <!-- operation request element -->
+  <element name="serviceInit">
+   <complexType>
+    <sequence>
+     <element name="workspace" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__serviceInit::workspace -->
+     <element name="tpldir" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__serviceInit::tpldir -->
+     <element name="recgmethod" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__serviceInit::recgmethod -->
+     <element name="option" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__serviceInit::option -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="serviceInitResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__serviceInit::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="train">
+   <complexType>
+    <sequence>
+     <element name="autostart" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ns__train::autostart -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="trainResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__train::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="trainAdd">
+   <complexType>
+    <sequence>
+     <element name="imgPath" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__trainAdd::imgPath -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="trainAddResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__trainAdd::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="trainDelete">
+   <complexType>
+    <sequence>
+     <element name="imgPath" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__trainDelete::imgPath -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="trainDeleteResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__trainDelete::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="serviceStart">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="serviceStartResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__serviceStart::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="imSearch">
+   <complexType>
+    <sequence>
+     <element name="imgPath" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__imSearch::imgPath -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="searchResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ns__searchResponse::tag -->
+     <element name="match" type="ns:pc" minOccurs="0" maxOccurs="unbounded"/><!-- ns__searchResponse::match -->
+     <element name="ocr" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- ns__searchResponse::ocr -->
+     <element name="consumedTime" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ns__searchResponse::consumedTime -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="serviceStop">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="serviceStopResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__serviceStop::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="serviceRestart">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="serviceRestartResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__serviceRestart::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="state">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="stateResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__state::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="progressPCT">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="progressPCTResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:float" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__progressPCT::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="clear">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="clearResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__clear::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="pid">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="pidResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__pid::tag -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="quit">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="quitResponse">
+   <complexType>
+    <sequence>
+     <element name="tag" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns__quit::tag -->
+    </sequence>
+   </complexType>
+  </element>
+ </schema>
+
+ <schema targetNamespace="urn:textDetect"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:ns="urn:Imsearch"
+  xmlns:ns2="urn:textDetect"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="urn:Imsearch"/>
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+ </schema>
+
+</types>
+
+<message name="serviceInitRequest">
+ <part name="Body" element="ns:serviceInit"/><!-- ns__serviceInit::ns__serviceInit -->
+</message>
+
+<message name="serviceInitResponse">
+ <part name="Body" element="ns:serviceInitResponse"/>
+</message>
+
+<message name="trainRequest">
+ <part name="Body" element="ns:train"/><!-- ns__train::ns__train -->
+</message>
+
+<message name="trainResponse">
+ <part name="Body" element="ns:trainResponse"/>
+</message>
+
+<message name="trainAddRequest">
+ <part name="Body" element="ns:trainAdd"/><!-- ns__trainAdd::ns__trainAdd -->
+</message>
+
+<message name="trainAddResponse">
+ <part name="Body" element="ns:trainAddResponse"/>
+</message>
+
+<message name="trainDeleteRequest">
+ <part name="Body" element="ns:trainDelete"/><!-- ns__trainDelete::ns__trainDelete -->
+</message>
+
+<message name="trainDeleteResponse">
+ <part name="Body" element="ns:trainDeleteResponse"/>
+</message>
+
+<message name="serviceStartRequest">
+ <part name="Body" element="ns:serviceStart"/><!-- ns__serviceStart::ns__serviceStart -->
+</message>
+
+<message name="serviceStartResponse">
+ <part name="Body" element="ns:serviceStartResponse"/>
+</message>
+
+<message name="imSearch">
+ <part name="Body" element="ns:imSearch"/><!-- ns__imSearch::ns__imSearch -->
+</message>
+
+<message name="searchResponse">
+ <part name="Body" element="ns:searchResponse"/><!-- ns__imSearch::ret -->
+</message>
+
+<message name="serviceStopRequest">
+ <part name="Body" element="ns:serviceStop"/><!-- ns__serviceStop::ns__serviceStop -->
+</message>
+
+<message name="serviceStopResponse">
+ <part name="Body" element="ns:serviceStopResponse"/>
+</message>
+
+<message name="serviceRestartRequest">
+ <part name="Body" element="ns:serviceRestart"/><!-- ns__serviceRestart::ns__serviceRestart -->
+</message>
+
+<message name="serviceRestartResponse">
+ <part name="Body" element="ns:serviceRestartResponse"/>
+</message>
+
+<message name="stateRequest">
+ <part name="Body" element="ns:state"/><!-- ns__state::ns__state -->
+</message>
+
+<message name="stateResponse">
+ <part name="Body" element="ns:stateResponse"/>
+</message>
+
+<message name="progressPCTRequest">
+ <part name="Body" element="ns:progressPCT"/><!-- ns__progressPCT::ns__progressPCT -->
+</message>
+
+<message name="progressPCTResponse">
+ <part name="Body" element="ns:progressPCTResponse"/>
+</message>
+
+<message name="clearRequest">
+ <part name="Body" element="ns:clear"/><!-- ns__clear::ns__clear -->
+</message>
+
+<message name="clearResponse">
+ <part name="Body" element="ns:clearResponse"/>
+</message>
+
+<message name="pidRequest">
+ <part name="Body" element="ns:pid"/><!-- ns__pid::ns__pid -->
+</message>
+
+<message name="pidResponse">
+ <part name="Body" element="ns:pidResponse"/>
+</message>
+
+<message name="quitRequest">
+ <part name="Body" element="ns:quit"/><!-- ns__quit::ns__quit -->
+</message>
+
+<message name="quitResponse">
+ <part name="Body" element="ns:quitResponse"/>
+</message>
+
+<portType name="ImsearchPortType">
+ <operation name="serviceInit">
+  <documentation>Service definition of function ns__serviceInit</documentation>
+  <input message="tns:serviceInitRequest"/>
+  <output message="tns:serviceInitResponse"/>
+ </operation>
+ <operation name="train">
+  <documentation>Service definition of function ns__train</documentation>
+  <input message="tns:trainRequest"/>
+  <output message="tns:trainResponse"/>
+ </operation>
+ <operation name="trainAdd">
+  <documentation>Service definition of function ns__trainAdd</documentation>
+  <input message="tns:trainAddRequest"/>
+  <output message="tns:trainAddResponse"/>
+ </operation>
+ <operation name="trainDelete">
+  <documentation>Service definition of function ns__trainDelete</documentation>
+  <input message="tns:trainDeleteRequest"/>
+  <output message="tns:trainDeleteResponse"/>
+ </operation>
+ <operation name="serviceStart">
+  <documentation>Service definition of function ns__serviceStart</documentation>
+  <input message="tns:serviceStartRequest"/>
+  <output message="tns:serviceStartResponse"/>
+ </operation>
+ <operation name="imSearch">
+  <documentation>Service definition of function ns__imSearch</documentation>
+  <input message="tns:imSearch"/>
+  <output message="tns:searchResponse"/>
+ </operation>
+ <operation name="serviceStop">
+  <documentation>Service definition of function ns__serviceStop</documentation>
+  <input message="tns:serviceStopRequest"/>
+  <output message="tns:serviceStopResponse"/>
+ </operation>
+ <operation name="serviceRestart">
+  <documentation>Service definition of function ns__serviceRestart</documentation>
+  <input message="tns:serviceRestartRequest"/>
+  <output message="tns:serviceRestartResponse"/>
+ </operation>
+ <operation name="state">
+  <documentation>Service definition of function ns__state</documentation>
+  <input message="tns:stateRequest"/>
+  <output message="tns:stateResponse"/>
+ </operation>
+ <operation name="progressPCT">
+  <documentation>Service definition of function ns__progressPCT</documentation>
+  <input message="tns:progressPCTRequest"/>
+  <output message="tns:progressPCTResponse"/>
+ </operation>
+ <operation name="clear">
+  <documentation>Service definition of function ns__clear</documentation>
+  <input message="tns:clearRequest"/>
+  <output message="tns:clearResponse"/>
+ </operation>
+ <operation name="pid">
+  <documentation>Service definition of function ns__pid</documentation>
+  <input message="tns:pidRequest"/>
+  <output message="tns:pidResponse"/>
+ </operation>
+ <operation name="quit">
+  <documentation>Service definition of function ns__quit</documentation>
+  <input message="tns:quitRequest"/>
+  <output message="tns:quitResponse"/>
+ </operation>
+</portType>
+
+<binding name="Imsearch" type="tns:ImsearchPortType">
+ <SOAP:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+ <operation name="serviceInit">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="train">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="trainAdd">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="trainDelete">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="serviceStart">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="imSearch">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="serviceStop">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="serviceRestart">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="state">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="progressPCT">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="clear">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="pid">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+ <operation name="quit">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+</binding>
+
+<service name="Imsearch">
+ <documentation>gSOAP 2.8.17r generated service definition</documentation>
+ <port name="Imsearch" binding="tns:Imsearch">
+  <SOAP:address location="http://localhost:8888/Imsearch.cgi"/>
+ </port> <port name="Imsearch" binding="tns:Imsearch">
+  <SOAP:address location="http://localhost:8888"/>
+ </port>
+</service>
+
+</definitions>

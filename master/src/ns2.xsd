@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <schema targetNamespace="urn:textDetect"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:ns="urn:Imsearch"
+  xmlns:ns2="urn:textDetect"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="urn:Imsearch"/>
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <!-- operation request element -->
+  <element name="setParams">
+   <complexType>
+    <sequence>
+     <element name="input" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ns2__setParams::input -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="setParamsResponse">
+   <complexType>
+    <sequence>
+     <element name="output" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns2__setParams::output -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="textDetect">
+   <complexType>
+    <sequence>
+     <element name="input" type="xsd:base64Binary" minOccurs="1" maxOccurs="1" nillable="true"/><!-- ns2__textDetect::input -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="textDetectResponse">
+   <complexType>
+    <sequence>
+     <element name="output" type="ns2:result" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ns2__textDetect::output -->
+    </sequence>
+   </complexType>
+  </element>
+ </schema>
+
