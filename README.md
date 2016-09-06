@@ -1,5 +1,5 @@
-# Kalava
-========
+Kalava-PIR
+==========
 
 Where to find complete Kalava documentation?
 -----------------------------------------
