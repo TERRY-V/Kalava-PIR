@@ -8,11 +8,11 @@ foo() {
 	echo -n "Are you sure to stop all Kalava services? Please answer yes to continue:"
 	read yesorno
 	if [ "$yesorno" = "yes" ]; then
-		ps x | grep "recgservice" | grep "yunshitu"
+		ps aux | grep "recgservice" | grep "yunshitu"
 		if [ $? -ne 0 ]; then
 			echo "No Kalava master or worker service is running!"
 		else
-			ps x | grep "recgservice" | grep "yunshitu" | awk '{print $1}' | xargs kill -9
+			ps aux | grep "recgservice" | grep "yunshitu" | awk '{print $2}' | xargs kill -9
 		fi
 		echo "done"
 	else
