@@ -34,15 +34,15 @@
     <TrainImageHeight>320</TrainImageHeight>
     <QueryImageWidth>280</QueryImageWidth>
     <QueryImageHeight>320</QueryImageHeight>
-    <FeatureTypeValue>1
+    <FeatureTypeValue>2
         <!--FAST: 0, SURF: 1, SIFT: 2-->
     </FeatureTypeValue>
-    <DescriptorTypeValue>1
+    <DescriptorTypeValue>2
         <!--BRIF: 0, SURF: 1, SIFT: 2-->
     </DescriptorTypeValue>
     <DrawMatching>0</DrawMatching>
     <RANSAC>0</RANSAC>
-    <QueryProcessType>0</QueryProcessType>
+    <QueryProcessType>1</QueryProcessType>
     <ImagePreProcessType>1</ImagePreProcessType>
     <TrainImagesStartPos>0.0</TrainImagesStartPos>
     <TrainImagesEndPos>1.0</TrainImagesEndPos>
