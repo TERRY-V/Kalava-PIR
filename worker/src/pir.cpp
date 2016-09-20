@@ -208,7 +208,7 @@ int32_t initServer(struct pirServer* server)
 	if(!server->main_logger)
 		return PIR_ERR;
 
-	ret=server->main_logger->init(server->main_log_path, server->main_log_prefix, server->main_log_size);
+	ret=server->main_logger->init(server->workspace.c_str(), server->main_log_prefix, server->main_log_size);
 	if(ret<0)
 		return PIR_ERR;
 
@@ -362,10 +362,8 @@ int32_t switchLoggingDirectory(struct pirServer* server)
 	server->main_logger=q_new<QLogger>();
 	if(server->main_logger==NULL)
 		return PIR_ERR;
-	std::ostringstream ss;
-	ss << server->port;
-	server->local_log_path = ss.str();
-	ret=server->main_logger->init(server->local_log_path.c_str(), server->main_log_prefix, server->main_log_size);
+
+	ret=server->main_logger->init(server->workspace.c_str(), server->main_log_prefix, server->main_log_size);
 	if(ret<0) {
 		q_delete<QLogger>(server->main_logger);
 		return PIR_ERR;

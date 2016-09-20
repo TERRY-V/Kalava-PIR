@@ -82,7 +82,7 @@ using namespace kalava;
 
 #define PIR_DEFAULT_LOG_PATH   ("../log")
 #define PIR_DEFAULT_LOG_PREFIX (NULL)
-#define PIR_DEFAULT_LOG_SCREEN (0)
+#define PIR_DEFAULT_LOG_SCREEN (1)
 #define PIR_DEFAULT_LOG_SIZE   (1<<10)
 
 #define PIR_LOG_QUERY_CACHE_SIZE (5<<20)
