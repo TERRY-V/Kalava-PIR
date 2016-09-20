@@ -25,6 +25,9 @@ cd $kalava_dir/sentinel
 echo "Kalava sentinel uses gsoap to generate servers and clients..."
 ./gsoap_setup.sh
 echo "Kalava sentinel uses cmake to compile the project..."
+if [ ! -x "build/" ]; then
+	mkdir build
+fi
 cd build
 cmake ..
 make clean
@@ -41,6 +44,9 @@ rm build/bin/vb.bss
 echo "Kalava master uses gsoap to generate servers and clients..."
 ./gsoap_setup.sh
 echo "Kalava master uses cmake to compile the project..."
+if [ ! -x "build/" ]; then
+	mkdir build
+fi
 cd build
 cmake ..
 make clean
@@ -57,6 +63,9 @@ rm build/bin/__*.rdb
 echo "Kalava worker uses gsoap to generate servers and clients..."
 ./gsoap_setup.sh
 echo "Kalava worker uses cmake to compile the project..."
+if [ ! -x "build/" ]; then
+	mkdir build
+fi
 cd build
 cmake ..
 make clean
