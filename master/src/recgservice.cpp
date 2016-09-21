@@ -16,9 +16,9 @@ void *search_thread(void* ptr_info)
 
 	/* soap init */
 	soap_init(&soap);
-	soap.connect_timeout=-1000*search_info->conn_timeout;
-	soap.recv_timeout=-1000*search_info->recv_timeout;
-	soap.send_timeout=-1000*search_info->send_timeout;
+	soap.connect_timeout=search_info->conn_timeout mSec;
+	soap.recv_timeout=search_info->recv_timeout mSec;
+	soap.send_timeout=search_info->send_timeout mSec;
 
 	search_info->sw_search.start();
 
@@ -30,7 +30,7 @@ void *search_thread(void* ptr_info)
 			&resp);
 
 	if(soap.error) {
-		server.main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"server [%02d] (%s) search error...", \
 				search_info->index, \
 				server.workerInfoVec[search_info->index].method.c_str());
@@ -43,7 +43,7 @@ void *search_thread(void* ptr_info)
 		search_info->sw_search.stop();
 
 #if defined (__VERBOSE_MODE)
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"server [%02d] (%s) finds (%d) similar pictures, which consumed (%dms)!", \
 				search_info->index, \
 				server.workerInfoVec[search_info->index].method.c_str(), \
@@ -67,7 +67,7 @@ int setParams(const char* ocr_server, int intput, int *output)
 
 	soap_call_ns2__setParams(&soap, ocr_server, "", intput, output);
 	if(soap.error) {
-		server.main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"Soap setParams error: %d, %s, %s", \
 				soap.error, \
 				*soap_faultcode(&soap), \
@@ -89,7 +89,7 @@ int textDetect(const char* ocr_server, xsd__base64Binary input, result *output)
 
 	soap_call_ns2__textDetect(&soap, ocr_server, "", input, output);
 	if(soap.error) {
-		server.main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"Soap textDetect error: %d, %s, %s", \
 				soap.error, \
 				*soap_faultcode(&soap), \
@@ -122,9 +122,9 @@ void *textDetect_thread(void* ptr_info)
 
 	/* soap init */
 	soap_init(psoap);
-	psoap->connect_timeout=-1000*search_info->conn_timeout;
-	psoap->recv_timeout=-1000*search_info->recv_timeout;
-	psoap->send_timeout=-1000*search_info->send_timeout;
+	psoap->connect_timeout=search_info->conn_timeout mSec;
+	psoap->recv_timeout=search_info->recv_timeout mSec;
+	psoap->send_timeout=search_info->send_timeout mSec;
 
 	inFp=fopen(search_info->image_path->c_str(), "rb");
 	if(inFp==NULL)
@@ -155,7 +155,7 @@ void *textDetect_thread(void* ptr_info)
 		search_info->ocr->append(tmp);
 #if 0
 		Q_INFO("Box %d:", i);
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"Box %02d: x = (%d), w = (%d), y = (%d), h = (%d)", \
 				i, \
 				result_out.boxes[i].x, \
@@ -187,7 +187,7 @@ end:
 	search_info->sw_search.stop();
 
 #if defined (__VERBOSE_MODE)
-	server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+	server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 			"server index (%d) search consumed (%dms)", \
 			search_info->index, \
 			search_info->sw_search.elapsed_ms());
@@ -207,7 +207,7 @@ int ns__imSearch(struct soap* soap, std::string imgPath, struct ns__searchRespon
 	int32_t query_num=0;
 
 #ifdef __VERBOSE_MODE
-	server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+	server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 			"server search (%s) starts...", \
 			imgPath.c_str());
 #endif
@@ -303,7 +303,7 @@ int ns__imSearch(struct soap* soap, std::string imgPath, struct ns__searchRespon
 
 #if defined (__TEST_SORT)
 		sw_sort.stop();
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"server search sort consumed (%dms)...", \
 				sw_sort.elapsed_ms());
 #endif
@@ -324,7 +324,7 @@ int ns__imSearch(struct soap* soap, std::string imgPath, struct ns__searchRespon
 		resp.consumedTime=search_object->search_sw.elapsed_ms();
 
 #ifdef __VERBOSE_MODE
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"server search finds (%d) simpliar pictures totally, which consumed (%dms)...", \
 				resp.match.size(), \
 				search_object->search_sw.elapsed_ms());
@@ -336,7 +336,7 @@ int ns__imSearch(struct soap* soap, std::string imgPath, struct ns__searchRespon
 		resp.tag=PIR_STATE_ERROR;
 		q_lock_inc(&server.stat_failed_conn);
 
-		server.main_logger->log(LEVEL_WARNING, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_WARNING, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"server state is not (%d)!", \
 				PIR_STATE_READY);
 	}
@@ -362,7 +362,7 @@ int ns__serviceInit(struct soap* soap, std::string workspace, std::string tpldir
 		soap_init(&soap);
 
 #if defined (__VERBOSE_MODE)
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"server index (%d) init begins...", i);
 #endif
 		soap_call_ns__serviceInit(&soap, \
@@ -427,7 +427,7 @@ void *train_thread(void*)
 		soap_init(&soap);
 
 #if defined (__VERBOSE_MODE)
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"server (%02d) training begins...", i);
 #endif
 
@@ -451,7 +451,7 @@ void *train_thread(void*)
 		}
 
 #if defined (__VERBOSE_MODE)
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"server (%02d) training ends, state = (%d)...", \
 				i, \
 				state);
@@ -469,7 +469,7 @@ int ns__train(struct soap* soap, int autostart, int* tag)
 {
 	server.autostart=autostart;
 	while(q_create_thread(train_thread, NULL)) {
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"serviceTrain create thread error...");
 		q_sleep(1000);
 	}
@@ -499,7 +499,7 @@ void *serviceStart_thread(void*)
 		soap_init(&soap);
 
 #if defined (__VERBOSE_MODE)
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"server (%02d) start begins...", i);
 #endif
 		soap_call_ns__serviceStart(&soap, server.workerInfoVec[i].method.c_str(), "", &resp);
@@ -516,7 +516,7 @@ void *serviceStart_thread(void*)
 int ns__serviceStart(struct soap* soap, int* tag)
 {
 	while(q_create_thread(serviceStart_thread, NULL)) {
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"serviceStart create serviceStart thread error...");
 		q_sleep(1);
 	}
@@ -556,7 +556,7 @@ int ns__serviceRestart(struct soap *soap ,int *tag)
 	clear();
 	server.serverstate=PIR_STATE_TRAINED;
 	while(q_create_thread(serviceStart_thread, NULL)) {
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 				"serviceStart create thread error...");
 		q_sleep(1);
 	}
@@ -730,20 +730,47 @@ void sigShutdownHandler(int sig)
 	 * the user really wanting to quit ASAP without waiting to persist
 	 * on disk. */
 	if(server.shutdown_asap && sig==SIGINT) {
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, "You inisit... exiting now.");
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, "You inisit... exiting now.");
 		exit(1); /* Exit with an error since this was not a clean shutdown. */
 	}
 
-	server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, "%s", msg);
+	server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, "%s", msg);
 	server.shutdown_asap=1; /* Exit with a clean shutdown */
 	return;
 }
 
-void computeServerStatus(int sig)
+void updateServerStatus(int sig)
 {
 	Q_NOTUSED(sig);
 
 	int32_t state=0x7fffffff;
+	int32_t ret=0;
+
+	struct stat buf;
+	if(stat(server.workerInfoFile, &buf)<0)
+		return;
+
+	/* check whether bss file was modified, a mutex lock is necessary */
+	if(buf.st_mtime>server.watchdog_mtime)
+	{
+		server.watchdog_mtime=buf.st_mtime;
+
+		server.bucketSize=0;
+		server.workerInfoVec.clear();
+
+		/* populate the workerInfoVec */
+		ret=loadWorkerInfo(server.workerInfoFile, server.workerInfoVec);
+		if(ret<0) {
+			server.logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
+					"loadWorkerInfo error, ret = (%d)!", ret);
+			exit(0);
+		}
+
+		/* update bucketSize */
+		server.bucketSize=server.workerInfoVec.size();
+	}
+
+	/* compute server status */
 	for(int32_t i=0; i<server.bucketSize; ++i)
 	{
 		struct soap soap;
@@ -755,7 +782,7 @@ void computeServerStatus(int sig)
 
 		soap_call_ns__state(&soap, server.workerInfoVec[i].method.c_str(), "", &server.workerInfoVec[i].state);
 		if(soap.error) {
-			server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+			server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 					"connect server (%s) error...", \
 					server.workerInfoVec[i].method.c_str());
 			server.serverstate=PIR_STATE_ERROR;
@@ -777,7 +804,7 @@ void computeServerStatus(int sig)
 
 end:
 #if defined(__VERBOSE_MODE) && defined (__WATCHDOG_LOG)
-	server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+	server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
 			"server state = (%d)...", \
 			server.serverstate);
 #endif
@@ -843,13 +870,16 @@ int32_t main(int32_t argc, char **argv)
 	/* set proc titile */
 	setproctitle(argc, argv, server.proct_prefix, server.proct_type);
 #endif
+
+	/* monitor */
+	if(server.monitor_enabled) createMonitor(&server);
 	
 	/* listen */
 	if(listenTcpServer(&server, inet_ntoa(server.ipv4), server.port, server.tcp_backlog)==PIR_ERR) {
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, "Port (%d) binds failed.....", server.port);
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, "Port (%d) binds failed.....", server.port);
 		exit(1);
 	} else {
-		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, "Port (%d) binds successful, master socket = (%d)", \
+		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, "Port (%d) binds successful, master socket = (%d)", \
 				server.port, server.master);
 	}
 

@@ -71,11 +71,13 @@ int32_t initServerConfig(struct pirServer* server)
 	server->delta_peak=PIR_DEFAULT_DELTA_PEAK;
 	server->delta_ratio=PIR_DEFAULT_DELTA_RATIO;
 	server->idletime_for_training=PIR_DEFAULT_IDLETIME;
-	server->main_log_path=NULL;
-	server->main_log_prefix=NULL;
-	server->main_log_size=PIR_DEFAULT_LOG_SIZE;
-	server->main_logger=NULL;
+	server->log_path=NULL;
+	server->log_prefix=NULL;
+	server->log_screen=PIR_DEFAULT_LOG_SCREEN;
+	server->log_size=PIR_DEFAULT_LOG_SIZE;
+	server->logger=NULL;
 	server->log_query_cache_size=PIR_LOG_QUERY_CACHE_SIZE;
+	server->watchdog_mtime=0;
 	server->watchdog_now=PIR_WATCHDOG_NOW;
 	server->watchdog_interval=PIR_WATCHDOG_INTERVAL;
 	server->monitor_enabled=PIR_DEFAULT_MONITOR_ENABLED;
@@ -100,6 +102,7 @@ int32_t initServerOptions(struct pirServer* server, int32_t argc, char** argv)
 
 	server->daemonize=checkForDaemonizeMode(server->argc, server->argv);
 	server->failover_policy=checkForRecoveryMode(server->argc, server->argv);
+
 	return PIR_OK;
 }
 
@@ -189,17 +192,21 @@ int32_t loadServerConfig(struct pirServer* server)
 	if(ret<0)
 		return PIR_ERR;
 
-	ret=config.getFieldString("log-path", server->main_log_path);
+	ret=config.getFieldString("log-path", server->log_path);
 	if(ret<0)
 		return PIR_ERR;
 
 #if 0
-	ret=config.getFieldString("log-prefix", server->main_log_prefix);
+	ret=config.getFieldString("log-prefix", server->log_prefix);
 	if(ret<0)
 		return PIR_ERR;
 #endif
 
-	ret=config.getFieldInt32("log-size", server->main_log_size);
+	ret=config.getFieldYesNo("log-screen", server->log_screen);
+	if(ret<0)
+		return PIR_ERR;
+
+	ret=config.getFieldInt32("log-size", server->log_size);
 	if(ret<0)
 		return PIR_ERR;
 
@@ -232,65 +239,65 @@ int32_t initServer(struct pirServer* server)
 	server->proct_type=strdup(server_type[server->flags].str);
 	server->wsdl_path=strdup(server_type[server->flags].wsdl);
 
-	server->main_logger=q_new<QLogger>();
-	if(!server->main_logger)
+	server->logger=q_new<QLogger>();
+	if(!server->logger)
 		return PIR_ERR;
 
-	ret=server->main_logger->init(server->main_log_path, server->main_log_prefix, server->main_log_size);
+	ret=server->logger->init(server->log_path, server->log_prefix, server->log_size);
 	if(ret<0)
 		return PIR_ERR;
 
-	server->main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
-			"Starting YUNSHITU master on Port [%d]......", \
+	server->logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
+			"Starting YUNSHITU master on Port [%d]...", \
 			server->port);
 
 	server->client_queue=q_new< QQueue<SOAP_SOCKET> >();
 	if(!server->client_queue) {
-		server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 				"initServer: server->client_queue is null!");
 		return PIR_ERR;
 	}
 
 	ret=server->client_queue->init(server->maxclients);
 	if(ret<0) {
-		server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 				"initServer: server->client_queue init error, ret = (%d)!", ret);
 		return PIR_ERR;
 	}
 
 	server->client_queue_trigger=q_new<QTrigger>();
 	if(!server->client_queue_trigger) {
-		server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 				"initServer: server->client_queue_trigger is null!");
 		return PIR_ERR;
 	}
 
 	server->client_search_queue=q_new< QQueue<searchObj*> >();
 	if(!server->client_search_queue) {
-		server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 				"initServer: server->client_search_queue is null!");
 		return PIR_ERR;
 	}
 
 	ret=server->client_search_queue->init(server->maxclients);
 	if(ret<0) {
-		server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 				"initServer: server->client_search_queue init error, ret = (%d)!", ret);
 		return PIR_ERR;
 	}
 
 	/* This function must be called for blocking SIGPIPE signal during socket communication */
-	//ret=q_init_socket();
-	//if(ret<0) {
-	//	server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
-	//			"initServer: init socket error, ret = (%d)!", ret);
-	//	return PIR_ERR;
-	//}
+	ret=q_init_socket();
+	if(ret<0) {
+		server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
+				"initServer: init socket error, ret = (%d)!", ret);
+		return PIR_ERR;
+	}
 
 	if(server->failover_policy && (access(server->workerInfoFile, F_OK)==0)) {
 		ret=loadWorkerInfo(server->workerInfoFile, server->workerInfoVec);
 		if(ret<0) {
-			server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+			server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 					"initServer: loadWorkerInfo error, ret = (%d)!", ret);
 			return PIR_ERR;
 		}
@@ -303,7 +310,7 @@ int32_t initServer(struct pirServer* server)
 	{
 		search_object=q_new<searchObj>();
 		if(search_object==NULL) {
-			server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+			server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 					"initServer: search_object is null!");
 			return PIR_ERR;
 		}
@@ -317,15 +324,29 @@ int32_t initServer(struct pirServer* server)
 
 	server->thread_info=q_new_array<struct threadInfo>(server->thread_num);
 	if(!server->thread_info) {
-		server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 				"initServer: server->thread_info is null!");
 		return PIR_ERR;
 	}
 
 	server->tid=q_new_array<pthread_t>(server->thread_num);
 	if(!server->tid) {
-		server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 				"initServer: server->tid is null!");
+		return PIR_ERR;
+	}
+
+	return PIR_OK;
+}
+
+int32_t createMonitor(struct pirServer* server)
+{
+	int32_t ret=0;
+
+	ret=server->monitor.init(server->monitor_port, getThreadState, (void*)server, 1);
+	if(ret<0) {
+		server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
+				"initServer: init monitor error!");
 		return PIR_ERR;
 	}
 
@@ -347,6 +368,7 @@ int32_t listenTcpServer(struct pirServer* server, const char* ip, int32_t port, 
 		soap_print_fault(&server->soap, stderr);
 		return PIR_ERR;
 	}
+
 	return PIR_OK;
 }
 
@@ -362,7 +384,7 @@ int32_t checkTcpBacklogSettings(struct pirServer* server, int32_t tcp_backlog)
 	{
 		int32_t somaxconn=atoi(buf);
 		if(somaxconn>0&&somaxconn<tcp_backlog) {
-			server->main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+			server->logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 					"The TCP backlog setting of %d can not be enfored because /proc/sys/net/core/somaxconn is set to the lower value of %d!", \
 					tcp_backlog, \
 					somaxconn);
@@ -382,7 +404,7 @@ int32_t serverMain(struct pirServer* server)
 	/* setup server state watchdog */
 	ret=setupWatchdog(server, server->watchdog_now, server->watchdog_interval);
 	if(ret<0) {
-		server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 				"initServer: setup watchdog error, ret = (%d)!", ret);
 		return PIR_ERR;
 	}
@@ -402,11 +424,11 @@ int32_t serverMain(struct pirServer* server)
 		server->thread_info[i].timeout=server->thread_timeout;
 		server->thread_info[i].psoap=soap_copy((struct soap*)&server->soap);
 
-		server->main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server->logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 				"initServer: starting thread (%02d)...", i);
 
 		if(q_create_thread(&server->tid[i], process_queue, (void*)&server->thread_info[i])) {
-			server->main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+			server->logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 					"initServer: thread (%02d) create error!", i);
 			q_sleep(1);
 		}
@@ -415,7 +437,7 @@ int32_t serverMain(struct pirServer* server)
 			q_sleep(1);
 
 		if(server->thread_info[i].flag&PIR_THREAD_STOPPED) {
-			server->main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+			server->logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 					"initServer: thread (%02d) start error!", i);
 			return PIR_ERR;
 		}
@@ -427,13 +449,13 @@ int32_t serverMain(struct pirServer* server)
 		if(!soap_valid_socket(sock))
 		{
 			if(server->soap.errnum) {
-				server->main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+				server->logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 						"Retrying sock (%d)...", \
 						sock);
 				soap_print_fault(&server->soap, stderr);
 				continue;
 			}
-			server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+			server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 					"Socket accept timed out error, sock = (%d)", \
 					sock);
 			break;
@@ -442,7 +464,7 @@ int32_t serverMain(struct pirServer* server)
 		++server->stat_numconnections;
 
 #if defined (__VERBOSE_MODE)
-		server->main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server->logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 				"Request task (%d), slave socket = (%d), IP = (%d.%d.%d.%d)...", \
 				server->stat_numconnections, \
 				sock, \
@@ -459,7 +481,7 @@ int32_t serverMain(struct pirServer* server)
 	for(i=0; i<server->thread_num; ++i)
 	{
 		q_thread_join(server->tid[i]);
-		server->main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+		server->logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 				"Thread (%d) terminated...", i);
 
 #if defined (__HAVING_THREAD_BUF__)
@@ -483,8 +505,9 @@ int32_t setupWatchdog(struct pirServer* server, int32_t now, int32_t interval)
 	server->watchdog.set_now(now);
 	server->watchdog.set_interval(interval);
 
-	if(server->watchdog.start(computeServerStatus))
+	if(server->watchdog.start(updateServerStatus))
 		return PIR_ERR;
+
 	return PIR_OK;
 }
 
@@ -656,7 +679,7 @@ int32_t getServerLog(struct pirServer* server, const char* day_str, char* log_bu
 	char log_file[1<<8]={0};
 	FILE* logfp=NULL;
 
-	sprintf(log_file, "%s/%s.log", server->main_log_path, day_str);
+	sprintf(log_file, "%s/%s.log", server->log_path, day_str);
 
 	if((logfp=fopen(log_file, "rb"))==NULL)
 		return PIR_ERR;
@@ -683,8 +706,11 @@ err:
 	return PIR_ERR;
 }
 
-int32_t getThreadState(struct pirServer* server)
+int32_t getThreadState(void* ptr_info)
 {
+	struct pirServer* server=reinterpret_cast<struct pirServer*>(ptr_info);
+	Q_CHECK_PTR(server);
+
 	/* monitor thread timout status */
 	int32_t count=0;
 	for(int32_t i=0; i<server->thread_num; ++i) {
@@ -695,6 +721,7 @@ int32_t getThreadState(struct pirServer* server)
 		if(server->thread_info[i].stopwatch.elapsed_ms()>server->thread_info[i].timeout)
 			++count;
 	}
+
 	return count;
 }
 
@@ -729,9 +756,9 @@ int32_t freeServer(struct pirServer* server)
 
 	q_free(server->ocr_server);
 
-	q_free(server->main_log_path);
-	q_free(server->main_log_prefix);
-	q_delete<QLogger>(server->main_logger);
+	q_free(server->log_path);
+	q_free(server->log_prefix);
+	q_delete<QLogger>(server->logger);
 
 	return PIR_OK;
 }
@@ -755,7 +782,7 @@ void *process_queue(void *ptr_info)
 		while(server->client_queue->pop_non_blocking(thread_info->psoap->socket)==0)
 		{
 			if(!soap_valid_socket(thread_info->psoap->socket)) {
-				server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+				server->logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 						"Soap socket is invalid, which may have closed!");
 				q_lock_inc(&server->stat_failed_conn);
 				continue;
@@ -771,7 +798,7 @@ void *process_queue(void *ptr_info)
 			server->lastinteraction=time(NULL);
 
 #if defined (__VERBOSE_MODE)
-			server->main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+			server->logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server->log_screen, \
 					"Task processing finished, which conusumed (%dms)!", \
 					thread_info->stopwatch.elapsed_ms());
 #endif
@@ -848,8 +875,9 @@ int32_t loadWorkerInfo(const char* snapshotFile, std::vector<workerInfo>& worker
 		return PIR_ERR;
 
 	QConfigReader reader;
-	int32_t ret=0;
+	char buf[1<<10]={0};
 	int32_t worker_num=0;
+	int32_t ret=0;
 
 	if(reader.init(snapshotFile)<0)
 		return PIR_ERR;
@@ -861,7 +889,7 @@ int32_t loadWorkerInfo(const char* snapshotFile, std::vector<workerInfo>& worker
 	for(int32_t i=0; i<worker_num; ++i)
 	{
 		struct workerInfo wi;
-		char buf[1<<10]={0};
+		int32_t flag=0;
 
 		sprintf(buf, "workspace-%02d", i);
 		ret=reader.getFieldString(buf, wi.workspace);
@@ -883,7 +911,13 @@ int32_t loadWorkerInfo(const char* snapshotFile, std::vector<workerInfo>& worker
 		if(ret<0)
 			return PIR_ERR;
 
-		workerInfoVec.push_back(wi);
+		sprintf(buf, "enable-%02d", i);
+		ret=reader.getFieldYesNo(buf, flag);
+		if(ret<0)
+			return PIR_ERR;
+
+		if(flag)
+			workerInfoVec.push_back(wi);
 	}
 
 	return PIR_OK;
@@ -898,13 +932,19 @@ int32_t writeWorkerInfo(const std::vector<workerInfo>& workerInfoVec, const char
 	if(fp==NULL)
 		return PIR_ERR;
 
-	fprintf(fp, "worker-num = %d\n\n", workerInfoVec.size());
+	fprintf(fp, "# Server:\n");
+	fprintf(fp, "worker-num = %d\n", workerInfoVec.size());
+	fprintf(fp, "\n");
+
 	for(int32_t i=0; i<workerInfoVec.size(); ++i)
 	{
+		fprintf(fp, "# Worker: %02d\n", i);
 		fprintf(fp, "workspace-%02d = %s\n", i, workerInfoVec[i].workspace.c_str());
 		fprintf(fp, "tpldir-%02d = %s\n", i, workerInfoVec[i].tpldir.c_str());
 		fprintf(fp, "method-%02d = %s\n", i, workerInfoVec[i].method.c_str());
-		fprintf(fp, "option-%02d = %s\n\n", i, workerInfoVec[i].option.c_str());
+		fprintf(fp, "option-%02d = %s\n", i, workerInfoVec[i].option.c_str());
+		fprintf(fp, "enable-%02d = yes\n", i);
+		fprintf(fp, "\n");
 	}
 
 	fclose(fp);

@@ -67,7 +67,7 @@ using namespace kalava;
 #define PIR_MAX_MEMORY         (0)
 #define PIR_MAX_BUCKET_SIZE    (100)
 
-#define PIR_DEFAULT_WORKER_INFO_FILE ("vb.bss")
+#define PIR_DEFAULT_WORKER_INFO_FILE ("__vb.bss")
 
 #define PIR_DEFAULT_DELTA_PEAK (100)
 #define PIR_DEFAULT_DELTA_RATIO (0.75)
@@ -92,7 +92,7 @@ using namespace kalava;
 
 #define PIR_DEFAULT_LOG_PATH   ("../log")
 #define PIR_DEFAULT_LOG_PREFIX (NULL)
-#define PIR_DEFAULT_LOG_SCREEN (0)
+#define PIR_DEFAULT_LOG_SCREEN (1)
 #define PIR_DEFAULT_LOG_SIZE   (1<<10)
 #define PIR_LOG_QUERY_CACHE_SIZE (5<<20)
 
@@ -110,6 +110,9 @@ using namespace kalava;
 
 #define PIR_SOAP_TAG_OK        (1)
 #define PIR_SOAP_TAG_ERR       (-1)
+
+#define uSec                   *-1
+#define mSec                   *-1000
 
 struct serverType {
 	uint8_t		stype;
@@ -275,12 +278,14 @@ struct pirServer {
 	int32_t		ocr_enabled;
 	char*		ocr_server;
 	/* Fields used for log */
-	char*		main_log_path;
-	char*		main_log_prefix;
-	int32_t		main_log_size;
-	QLogger*	main_logger;
+	char*		log_path;
+	char*		log_prefix;
+	int32_t		log_screen;
+	int32_t		log_size;
+	QLogger*	logger;
 	int32_t		log_query_cache_size;
 	/* watchdog for server status */
+	time_t		watchdog_mtime;
 	int32_t		watchdog_now;		/* current value can't be 0 */
 	int32_t		watchdog_interval;
 	QWatchdog	watchdog;
@@ -300,6 +305,7 @@ int32_t initServerConfig(struct pirServer* server);
 int32_t initServerOptions(struct pirServer* server, int32_t argc, char** argv);
 int32_t loadServerConfig(struct pirServer* server);
 int32_t resetServerStats(struct pirServer* server);
+int32_t createMonitor(struct pirServer* server);
 int32_t initServer(struct pirServer* server);
 int32_t listenTcpServer(struct pirServer* server, const char* ip, int32_t port, int32_t tcp_backlog);
 int32_t checkTcpBacklogSettings(struct pirServer* server, int32_t tcp_backlog);
@@ -308,12 +314,11 @@ int32_t updateCachedTime(struct pirServer* server);
 int32_t setupWatchdog(struct pirServer* server, int32_t now, int32_t interval);
 int32_t getServerInfo(struct pirServer* server, char* server_info, int32_t server_info_size);
 int32_t getServerLog(struct pirServer* server, const char* day_str, char* log_buf, int32_t log_size, int64_t* log_len);
-int32_t getThreadState(struct pirServer* server);
 int32_t freeServer(struct pirServer* server);
 
 int32_t setupSignalHandlers(void);
 void sigShutdownHandler(int sig);
-void computeServerStatus(int32_t sig);
+void updateServerStatus(int32_t sig);
 int32_t checkForDaemonizeMode(int32_t argc, char** argv);
 int32_t checkForRecoveryMode(int32_t argc, char** argv);
 int32_t checkTcpBacklogSettings(int32_t tcp_backlog);
@@ -321,6 +326,7 @@ int32_t getData(const std::string& s, int32_t& bucketSize, std::vector<std::stri
 int32_t initWorkerInfo(const std::string& workspace, const std::string& tpldir, const std::string& method, const std::string& option, std::vector<workerInfo>& workerInfoVec);
 int32_t loadWorkerInfo(const char* snapshotFile, std::vector<workerInfo>& workerInfoVec);
 int32_t writeWorkerInfo(const std::vector<workerInfo>& workerInfoVec, const char* snapshotFile);
+int32_t getThreadState(void* ptr_info);
 int32_t http_get(struct soap* soap);
 void *process_queue(void *ptr_info);
 
