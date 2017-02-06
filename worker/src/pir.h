@@ -173,8 +173,8 @@ struct pirServer {
 	uint32_t	serverstate:8;
 	uint32_t	autostart:1;
 	uint32_t	daemonize:1;
-	uint32_t	failover_policy:1;
 	uint32_t	shutdown_asap:1;
+	uint32_t	failover_policy;
 	float		progressPCT;
 	char*		proct_prefix;
 	char*		proct_type;

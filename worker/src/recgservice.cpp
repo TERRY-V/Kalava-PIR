@@ -686,9 +686,9 @@ int32_t main(int32_t argc, char **argv)
 	}
 
 	/* autostart */
-	if(server.autostart==1)
+	if(server.failover_policy==1)
 		serviceStart();
-	else if(server.autostart==2)
+	else if(server.failover_policy==2)
 		serviceTrain();
 
 	/* event loop */

@@ -263,7 +263,7 @@ int32_t initServer(struct pirServer* server)
 
 	if(server->failover_policy) {
 		/* auto start */
-		server->autostart=server->failover_policy;
+		server->autostart=1;
 
 		if(loadWorkerInfo(server)==PIR_ERR) {
 			server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
