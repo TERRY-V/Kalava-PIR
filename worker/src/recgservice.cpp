@@ -581,6 +581,24 @@ void sigShutdownHandler(int sig)
 	return;
 }
 
+int32_t serviceTrain()
+{
+	server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+			"serviceTrain starts: server state = (%d)...", \
+			server.serverstate);
+
+	server.serverstate=PIR_STATE_TRAINING;
+	server.progressPCT=0.f;
+
+	while(q_create_thread(train_thread, NULL)) {
+		server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
+				"serviceTrain create thread error...");
+		q_sleep(1000);
+	}
+
+	return PIR_OK;
+}
+
 int32_t serviceStart()
 {
 	server.main_logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
@@ -668,7 +686,10 @@ int32_t main(int32_t argc, char **argv)
 	}
 
 	/* autostart */
-	if(server.autostart==1) serviceStart();
+	if(server.autostart==1)
+		serviceStart();
+	else if(server.autostart==2)
+		serviceTrain();
 
 	/* event loop */
 	serverMain(&server);

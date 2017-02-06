@@ -10,13 +10,13 @@ struct serverType server_type[] =
 
 struct serverState server_state[] =
 {
-	{0x00, "pir_state_none", "the server is waiting for initialization.", 0, "1.0.0"},
-	{0x01, "pir_state_initing", "the server is initializing configuration parameters.", 1, "1.0.0"},
-	{0x02, "pir_state_inited", "the server is successfully inited.", 1, "1.0.0"},
-	{0x03, "pir_state_training", "the server is trainning template images.", 2, "1.0.0"},
-	{0x04, "pir_state_trained", "the server is successfully trained.", 2, "1.0.0"},
-	{0x05, "pir_state_starting", "the server is statring up.", 3, "1.0.0"},
-	{0x06, "pir_state_ready", "the server is ready for retrieval.", 3, "1.0.0"}
+	{0x00, "PIR_STATE_NONE", "the server is waiting for initialization.", 0, "1.0.0"},
+	{0x01, "PIR_STATE_INITING", "the server is initializing configuration parameters.", 1, "1.0.0"},
+	{0x02, "PIR_STATE_INITED", "the server is successfully inited.", 1, "1.0.0"},
+	{0x03, "PIR_STATE_TRAINING", "the server is trainning template images.", 2, "1.0.0"},
+	{0x04, "PIR_STATE_TRAINED", "the server is successfully trained.", 2, "1.0.0"},
+	{0x05, "PIR_STATE_STARTING", "the server is statring up.", 3, "1.0.0"},
+	{0x06, "PIR_STATE_READY", "the server is ready for retrieval.", 3, "1.0.0"}
 };
 
 int32_t initServerConfig(struct pirServer* server)
@@ -263,7 +263,7 @@ int32_t initServer(struct pirServer* server)
 
 	if(server->failover_policy) {
 		/* auto start */
-		server->autostart=1;
+		server->autostart=server->failover_policy;
 
 		if(loadWorkerInfo(server)==PIR_ERR) {
 			server->main_logger->log(LEVEL_ERROR, __FILE__, __LINE__, __FUNCTION__, PIR_DEFAULT_LOG_SCREEN, \
@@ -496,6 +496,8 @@ int32_t checkForRecoveryMode(int32_t argc, char** argv)
 	for(int32_t i=0; i<argc; ++i) {
 		if(strcmp(argv[i], "-r")==0 || strcmp(argv[i], "--recovery")==0)
 			return 1;
+		if(strcmp(argv[i], "-r2")==0 || strcmp(argv[i], "--recovery2")==0)
+			return 2;
 	}
 	return 0;
 }
