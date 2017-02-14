@@ -315,6 +315,12 @@ int ns__imSearch(struct soap* soap, std::string imgPath, struct ns__searchRespon
 			__pc.pc=search_object->search_res[i].first;
 			__pc.score=search_object->search_res[i].second;
 			resp.match.push_back(__pc);
+#ifdef __VERBOSE_MODE
+			server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
+					"server finds picture (%s), score is (%d)...", \
+					search_object->search_res[i].first.c_str(), \
+					search_object->search_res[i].second);
+#endif
 		}
 
 		if(server.ocr_enabled)
@@ -325,7 +331,7 @@ int ns__imSearch(struct soap* soap, std::string imgPath, struct ns__searchRespon
 
 #ifdef __VERBOSE_MODE
 		server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
-				"server search finds (%d) simpliar pictures totally, which consumed (%dms)...", \
+				"server search finds (%d) similar pictures totally, which consumed (%dms)...", \
 				resp.match.size(), \
 				search_object->search_sw.elapsed_ms());
 #endif
