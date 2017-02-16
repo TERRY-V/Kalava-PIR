@@ -317,7 +317,7 @@ int ns__imSearch(struct soap* soap, std::string imgPath, struct ns__searchRespon
 			resp.match.push_back(__pc);
 #ifdef __VERBOSE_MODE
 			server.logger->log(LEVEL_INFO, __FILE__, __LINE__, __FUNCTION__, server.log_screen, \
-					"server finds picture (%s), score is (%f)...", \
+					"PIR finds picture (%s) with a score of (%0.2f)...", \
 					search_object->search_res[i].first.c_str(), \
 					search_object->search_res[i].second);
 #endif

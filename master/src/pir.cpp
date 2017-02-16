@@ -10,13 +10,13 @@ struct serverType server_type[] =
 
 struct serverState server_state[] =
 {
-	{0x00, "pir_state_none", "the server is waiting for initialization.", 0, "1.0.0"},
-	{0x01, "pir_state_initing", "the server is initializing configuration parameters.", 1, "1.0.0"},
-	{0x02, "pir_state_inited", "the server is successfully inited.", 1, "1.0.0"},
-	{0x03, "pir_state_training", "the server is trainning template images.", 2, "1.0.0"},
-	{0x04, "pir_state_trained", "the server is successfully trained.", 2, "1.0.0"},
-	{0x05, "pir_state_starting", "the server is statring up.", 3, "1.0.0"},
-	{0x06, "pir_state_ready", "the server is ready for retrieval.", 3, "1.0.0"}
+	{0x00, "pir_state_none", "The server is waiting for initialization.", 0, "1.0.0"},
+	{0x01, "pir_state_initing", "The server is initializing configuration parameters.", 1, "1.0.0"},
+	{0x02, "pir_state_inited", "The server is successfully inited.", 1, "1.0.0"},
+	{0x03, "pir_state_training", "The server is trainning template images.", 2, "1.0.0"},
+	{0x04, "pir_state_trained", "The server is successfully trained.", 2, "1.0.0"},
+	{0x05, "pir_state_starting", "The server is statring up.", 3, "1.0.0"},
+	{0x06, "pir_state_ready", "The server is ready for retrieval.", 3, "1.0.0"}
 };
 
 int32_t initServerConfig(struct pirServer* server)
